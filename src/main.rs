@@ -7,11 +7,15 @@ mod routes;
 mod handlers;
 mod common;
 mod services;
+mod db;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
+    // 日志初始化
     let (_res, _guard) = middleware::log::init_logging();
+
+    // 数据库初始化
+    db::mysql::init_db();
     
     let server = HttpServer::new(|| {
         App::new()
