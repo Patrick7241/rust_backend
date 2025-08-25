@@ -1,8 +1,10 @@
 use actix_web::{App, HttpServer};
-use tokio::{signal,select};
+use actix_web::middleware::from_fn;
+use tokio::{signal, select};
 use tracing::{info};
 
 mod middleware;
+mod routes;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -11,8 +13,10 @@ async fn main() -> std::io::Result<()> {
     
     let server = HttpServer::new(|| {
         App::new()
+            // 跨域配置
             .wrap(middleware::cors::config_cors())
-            .service(actix_web::web::resource("/").to(|| async { "Hello World!" }))
+            // 鉴权中间件配置
+            .wrap(from_fn(middleware::authorization::config_authorization))
     })
         .bind(("127.0.0.1", 8080))?
         .run();

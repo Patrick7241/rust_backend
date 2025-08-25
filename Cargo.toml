@@ -5,7 +5,7 @@ edition = "2024"
 
 # TODO 生产环境features按需引用
 [dependencies]
-actix-web = "4"
+actix-web = { version = "4" }
 actix-cors = "0.7.1"
 tokio = { version = "1.47.1", features = ["full"] }
 tracing = "0.1"
