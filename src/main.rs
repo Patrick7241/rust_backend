@@ -1,11 +1,12 @@
 use actix_web::{App, HttpServer};
-use actix_web::middleware::from_fn;
 use tokio::{signal, select};
 use tracing::{info};
 
 mod middleware;
 mod routes;
 mod handlers;
+mod common;
+mod services;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
