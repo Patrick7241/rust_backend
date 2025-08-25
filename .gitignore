@@ -1,0 +1,45 @@
+# =====================
+# macOS 系统文件
+# =====================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+*.swp
+*.swo
+ehthumbs.db
+Thumbs.db
+
+# =====================
+# Rust 编译产物
+# =====================
+/target/
+/**/target/
+
+# Cargo 包管理
+**/Cargo.lock
+
+# =====================
+# RustRover / JetBrains IDE 文件
+# =====================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# =====================
+# 日志和临时文件
+# =====================
+*.log
+*.tmp
+*.temp
+*.bak
+
+# =====================
+# 编辑器配置文件
+# =====================
+.vscode/
+*.code-workspace
