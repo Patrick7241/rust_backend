@@ -1,3 +1,3 @@
-## rust_blog
+## rust_backend
 
 *for practice*
