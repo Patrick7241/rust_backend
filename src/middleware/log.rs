@@ -6,35 +6,32 @@ use tracing_subscriber::{fmt, EnvFilter, Registry};
 use tracing_subscriber::prelude::*;
 use time::macros::format_description;
 use tracing_subscriber::fmt::time::LocalTime;
+use tracing_log::LogTracer;
 
-pub fn init_logging() -> (io::Result<()>, tracing_appender::non_blocking::WorkerGuard) {
-    // 设置日志过滤器，默认 DEBUG，可用 RUST_LOG 覆盖
+pub fn init_logging() -> (io::Result<()>, non_blocking::WorkerGuard) {
+    // 使 log crate 的日志转发给 tracing
+    LogTracer::init().expect("Failed to set LogTracer");
+
     let filter = EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| EnvFilter::new("rust_blog=info"));  // 过滤掉非本crate的日志内容
+        .unwrap_or_else(|_| EnvFilter::new("rust_backend=info,actix_web=info"));
 
-    // 滚动日志配置
     let rolling_appender = RollingFileAppender::new(Rotation::DAILY, "logs", "app.log");
     let (non_blocking_appender, guard) = non_blocking(rolling_appender);
 
-
-    let timer = LocalTime::new(format_description!("[year]-[month]-[day] [hour]:[minute]:[second]"));
+    let timer = LocalTime::new(
+        format_description!("[year]-[month]-[day] [hour]:[minute]:[second]")
+    );
 
     let console_layer = fmt::layer()
         .with_writer(io::stdout)
         .with_ansi(true)
-        .with_thread_ids(false)
-        .with_timer(timer.clone())
-        .with_target(false);
+        .with_timer(timer.clone());
 
     let file_layer = fmt::layer()
         .with_writer(non_blocking_appender)
         .with_ansi(false)
-        .with_thread_ids(false)
-        .with_timer(timer)
-        .with_target(false);
+        .with_timer(timer);
 
-
-    // 注册 subscriber
     let subscriber = Registry::default()
         .with(filter)
         .with(console_layer)

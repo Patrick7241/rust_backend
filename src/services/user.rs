@@ -21,7 +21,7 @@ pub fn login(username_input: &str, password_input: &str) -> Result<String> {
     // 校验用户
     match user_opt {
         Some((db_username, db_password)) if db_password == password_input => {
-            let token = token::generate(&db_username, 60 * 60 * 24 * 7)?;
+            let token = token::generate(&db_username, 30)?;
             Ok(token)
         }
         _ => Err(anyhow::anyhow!("用户名或密码错误")),

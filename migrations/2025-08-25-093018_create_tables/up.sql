@@ -6,5 +6,5 @@ CREATE TABLE users (
 
 -- 插入初始化数据
 INSERT INTO users (username, password) VALUES
-                                           ('admin', 'admin'),
-                                           ('test', '1');
+                                           ('admin', '$2b$12$TuLIBnkqAXpim4D5fAWiweyRNjHX7juch4mCPSEFr2JGY7mEpWvse'),
+                                           ('test', '$2b$12$9TQlcpGBHdDhOgUEoJeP/en1oMHN4vlzDQ7kLMiknbybs9l7BL50K');
