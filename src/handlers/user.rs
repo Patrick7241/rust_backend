@@ -1,4 +1,4 @@
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{post,get, web, HttpResponse, Responder};
 use serde::Deserialize;
 use crate::common::http::ApiResponse;
 
@@ -27,4 +27,9 @@ pub async fn login(payload: Result<web::Json<LoginRequest>, actix_web::Error>) -
         }
         Err(e) => HttpResponse::BadRequest().json(ApiResponse::<()>::error(400, e.to_string())),
     }
+}
+
+#[post("/permissions")]
+pub async fn permissions() -> impl Responder {
+    HttpResponse::Ok().json(ApiResponse::success(vec!["permission1", "permission2"]))
 }

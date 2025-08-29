@@ -28,10 +28,10 @@ async fn main() -> Result<()> {
             // 挂载路由
             .configure(routes::init_routes)
     })
-        .bind(("127.0.0.1", 8080))?
+        .bind(("127.0.0.1", 8888))?
         .run();
 
-    info!("🚀 Server running at http://127.0.0.1:8080");
+    info!("🚀 Server running at http://127.0.0.1:8888");
 
     // 获取服务器句柄用于优雅关闭
     let server_handle = server.handle();

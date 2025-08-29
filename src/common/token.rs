@@ -5,9 +5,9 @@ use chrono::{Utc, Duration};
 /// JWT 负载结构（Claims）
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub sub: String,   // 用户标识
+    pub username: String,   // 用户名
+    pub user_id: String,   // 用户ID
     pub exp: usize,    // 过期时间（秒级时间戳）
-    // 设置签发时间，防止短时间内被重放攻击，和签发时间间隔过长的token即使没有过期，也无效
     pub iat: usize,    // 签发时间（秒级时间戳）
 }
 
@@ -15,12 +15,13 @@ pub struct Claims {
 const SECRET_KEY: &[u8] = b"changeme";
 
 /// 生成 JWT token
-pub fn generate(sub: &str, expires_in_minutes: i64) -> Result<String, jsonwebtoken::errors::Error> {
+pub fn generate(username: &str, user_id: &str,expires_in_minutes: i64) -> Result<String, jsonwebtoken::errors::Error> {
     let now = Utc::now().timestamp() as usize;
     let expiration = (Utc::now() + Duration::minutes(expires_in_minutes)).timestamp() as usize;
 
     let claims = Claims {
-        sub: sub.to_owned(),
+        username: username.to_owned(),
+        user_id: user_id.to_owned(),
         exp: expiration,
         iat: now,   // 签发时间
     };
@@ -41,10 +42,11 @@ pub fn verify(token: &str) -> Result<TokenData<Claims>, jsonwebtoken::errors::Er
     )?;
 
     let now = Utc::now().timestamp() as usize;
-    if now.saturating_sub(data.claims.iat) > 10 {
-        return Err(jsonwebtoken::errors::Error::from(
-            jsonwebtoken::errors::ErrorKind::ExpiredSignature,
-        ));
+
+    // 处理异常清空，签发时间不可能比现在时间大，防止攻击者仿造来自未来的token
+    // 允许5秒的误差
+    if data.claims.iat > now + 5{
+        return Err(jsonwebtoken::errors::Error::from(jsonwebtoken::errors::ErrorKind::InvalidToken));
     }
 
     Ok(data)
